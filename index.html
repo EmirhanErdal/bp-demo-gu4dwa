@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
 <title>Bestellportal · Prototyp</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bestellportal">
+<meta name="theme-color" content="#F2F1EE">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
 html,body{height:100%;overflow:hidden}
@@ -15,6 +23,12 @@ body{margin:0;background:#1B1916;display:flex;align-items:center;justify-content
 .mobile body{background:#F2F1EE}
 .mobile #phone{border-radius:0;box-shadow:none}
 .mobile #app>div,.mobile #app>div>div{height:100%!important}
+.mobile body{background:#FFFFFF}
+#a2hs{position:fixed;left:12px;right:12px;bottom:12px;z-index:10;display:none;align-items:center;gap:12px;padding:14px 14px 14px 16px;border-radius:18px;background:#17140F;color:#fff;font:600 14px/1.4 -apple-system,system-ui,sans-serif;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+#a2hs.on{display:flex}
+#a2hs small{display:block;color:#CFC8BC;font-weight:500;font-size:12px;margin-top:2px}
+#a2hs svg{vertical-align:-3px}
+#a2hs button{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
 .nojs{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:32px;background:#1B1916;color:#fff;font:600 17px/1.5 -apple-system,system-ui,sans-serif;text-align:center}
 .nojs b{display:block;font-size:22px;margin-bottom:10px}
 
@@ -29,6 +43,7 @@ button,input,textarea{font-family:inherit}
 <body>
 <noscript><div class="nojs"><div><b>Bu önizleme uygulamayı çalıştıramıyor</b>Dosyayı Safari veya Chrome ile açın.<br>Diese Vorschau kann die App nicht ausführen – bitte in Safari oder Chrome öffnen.</div></div></noscript>
 <div id="box"><div id="phone"><div id="app"></div></div></div>
+<div id="a2hs" role="note"><div style="flex:1">Tam ekran için: alttaki <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"></path></svg> Paylaş → <b>Ana Ekrana Ekle</b><small>Vollbild: Teilen → „Zum Home-Bildschirm“</small></div><button type="button" aria-label="Kapat" id="a2hs-x">×</button></div>
 <template id="tpl">
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; display: flex; flex-direction: column; background: #F2F1EE; color: #17140F; font-family: 'Manrope', system-ui, sans-serif; font-size: 15px; line-height: 1.4">
 
@@ -1246,6 +1261,20 @@ render();
 if (comp.componentDidMount) comp.componentDidMount();
 window.addEventListener('resize', fit);
 fit();
+(function () {
+  // iPhone Safari'de, ana ekrana eklenmemişse tam ekran ipucu
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  var standalone = navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  var seen = false;
+  try { seen = localStorage.getItem('a2hs-kapali') === '1'; } catch (e) {}
+  if (!ios || standalone || seen) return;
+  var el = document.getElementById('a2hs');
+  el.classList.add('on');
+  document.getElementById('a2hs-x').addEventListener('click', function () {
+    el.classList.remove('on');
+    try { localStorage.setItem('a2hs-kapali', '1'); } catch (e) {}
+  });
+})();
 
 </script>
 </body>
